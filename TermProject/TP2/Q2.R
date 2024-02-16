@@ -1,4 +1,4 @@
-# Question 1
+# Question 2
 data = read.csv("compustat.csv");
 data.2015 = data[data$YEAR == 2015,];
 data.2016 = data[data$YEAR == 2016,];
@@ -20,5 +20,21 @@ data.both.q4 = data.2015.q4[data.2015.q4$CUSIP %in% data.2016.q4$CUSIP,];
 print(sum(data.2015.q4$PE.ratio > 0) / nrow(data.2015.q4) * 100);
 print(sum(data.2016.q4$PE.ratio < 0) / nrow(data.2016.q4) * 100);
 
-
-print("TODO");
+peratio.total.count = 0;
+peratio.decrease.count = 0;
+for(i in 1:nrow(data.2015.q4)) {
+  row2015 = data.2015.q4[i,];
+  cusip = row2015[[1]];
+  
+  row2016 = data.2016.q4[data.2016.q4$CUSIP == cusip,];
+  if(nrow(row2016) > 0) {
+    peratio.total.count = peratio.total.count + 1;
+    pe2015 = row2015[[7]];
+    pe2016 = row2016[[7]];
+    if(pe2015 > pe2016) {
+      peratio.decrease.count = peratio.decrease.count + 1;
+    }
+  }
+}
+print(peratio.decrease.count);
+print(peratio.decrease.count / peratio.total.count * 100);
